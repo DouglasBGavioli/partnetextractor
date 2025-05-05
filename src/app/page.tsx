@@ -1,27 +1,37 @@
 'use client'
 
 import { useState } from "react"
+import { partners } from "@/data/partners";
 
 export default function Home() {
-  const [partners, setPartners] = useState<string>('');
-  const [partnersRefactored, setPartnersRefactored] = useState<string[]>([]);
+  const [inputPartners, setInputPartners] = useState<string>('');
+  const [normalizedInput, setNormalizedInput] = useState<string[]>([]);
+  const [notFound, setNotFound] = useState<string[]>([]);
 
 
-  function processarParceiros(input: string): string[] {
-    const parceiros = input.split(',');
+  console.log("data partners", partners);
+  console.log("input partners", inputPartners);
+  console.log("input normalized", normalizedInput);
 
-    const parceirosProcessados = parceiros.map(parceiro =>
-      parceiro.replace(/[^a-zA-Z0-9\s]/g, '').toLowerCase()
-    );
+  const handleParceirosInput = (input: string) => {
+    const listaLimpa = input
+      .split('\n') // separa por linhas
+      .map(item =>
+        item
+          .trim() // remove espaços extras
+          .normalize('NFD') // normaliza caracteres acentuados
+          .replace(/[\u0300-\u036f]/g, '') // remove acentos
+          .replace(/[^a-zA-Z0-9\s]/g, '') // remove caracteres especiais
+          .replace(/\s+/g, '-') // substitui espaços por hífens
+          .toLowerCase() // deixa tudo em minúsculo
+      )
+      .filter(item => item.length > 0) // remove linhas vazias
 
-    return parceirosProcessados;
+    setNormalizedInput(listaLimpa)
   }
 
-  function tratarLista() {
-    if (partners) {
-      const parceirosProcessados = processarParceiros(partners);
-      setPartnersRefactored(parceirosProcessados);
-    }
+  function copiarParaClipboard() {
+    navigator.clipboard.writeText(normalizedInput.join(','));
   }
 
   return (
@@ -33,24 +43,24 @@ export default function Home() {
           id="text-area-parceiros"
           placeholder="Cole os nomes dos parceiros aqui, um por linha..."
           className="w-full h-40 p-2 border border-gray-300 rounded resize-none"
-          value={partners}
-          onChange={(e) => setPartners(e.target.value)}
+          value={inputPartners}
+          onChange={(e) => setInputPartners(e.target.value)}
         ></textarea>
 
         <button
-          className="bg-livelo-pink text-white px-4 py-2 rounded hover:bg-pink-600 transition"
-          onClick={tratarLista}
+          className="bg-livelo-pink text-white px-4 py-2 rounded hover:bg-pink-700 transition cursor-pointer"
+          onClick={() => handleParceirosInput(inputPartners)}
         >
           Gerar Códigos
         </button>
 
         <div className="bg-gray-100 p-3 rounded max-h-60 overflow-y-auto font-mono text-sm whitespace-pre-wrap">
-          <p className="text-red-600">Output fake falta tratativa</p>
-          {partnersRefactored.join(', ')}
+          {normalizedInput.length > 0 ? normalizedInput.join(",") : <p className="text-red-600">Nenhum código encontrado</p>}
         </div>
 
         <button
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition cursor-pointer"
+          onClick={copiarParaClipboard}
         >
           Copiar Códigos
         </button>
