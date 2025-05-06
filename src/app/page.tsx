@@ -5,13 +5,9 @@ import { partners } from "@/data/partners";
 
 export default function Home() {
   const [inputPartners, setInputPartners] = useState<string>('');
-  const [normalizedInput, setNormalizedInput] = useState<string[]>([]);
+  const [partnersCodes, setPartnerdsCodes] = useState<string[]>([]);
   const [notFound, setNotFound] = useState<string[]>([]);
 
-
-  console.log("data partners", partners);
-  console.log("input partners", inputPartners);
-  console.log("input normalized", normalizedInput);
 
   const handleParceirosInput = (input: string) => {
     const listaLimpa = input
@@ -27,11 +23,33 @@ export default function Home() {
       )
       .filter(item => item.length > 0) // remove linhas vazias
 
-    setNormalizedInput(listaLimpa)
+    return listaLimpa;
   }
 
+  const extractPartnersCods = () => {
+    const normalizedInput = handleParceirosInput(inputPartners);
+    console.log("input normalizado", normalizedInput);
+    
+    const codigos = normalizedInput.map((item) => {
+      const partner = partners.find(partner => partner.name.toLowerCase() === item);
+      if (partner) {
+        return partner.code;
+      } else {
+        setNotFound(prev => [...prev, item]);
+        return null;
+      }
+    }).filter(Boolean);
+
+    if (codigos.length > 0) {
+      setPartnerdsCodes(codigos as string[]);
+    } else {
+      setPartnerdsCodes([]);
+    }
+  } 
+  console.log("nao encontrados", notFound);
+  
   function copiarParaClipboard() {
-    navigator.clipboard.writeText(normalizedInput.join(','));
+    navigator.clipboard.writeText(partnersCodes.join(','));
   }
 
   return (
@@ -49,13 +67,13 @@ export default function Home() {
 
         <button
           className="bg-livelo-pink text-white px-4 py-2 rounded hover:bg-pink-700 transition cursor-pointer"
-          onClick={() => handleParceirosInput(inputPartners)}
+          onClick={extractPartnersCods}
         >
           Gerar Códigos
         </button>
 
         <div className="bg-gray-100 p-3 rounded max-h-60 overflow-y-auto font-mono text-sm whitespace-pre-wrap">
-          {normalizedInput.length > 0 ? normalizedInput.join(",") : <p className="text-red-600">Nenhum código encontrado</p>}
+          {partnersCodes.length > 0 ? partnersCodes.join(",") : <p className="text-red-600">Nenhum código encontrado</p>}
         </div>
 
         <button
@@ -64,6 +82,19 @@ export default function Home() {
         >
           Copiar Códigos
         </button>
+      </div>
+      <div>
+        {notFound.length > 0 && (
+          <div className="bg-red-100 text-red-700 p-4 rounded mt-4">
+            <h2 className="font-bold text-black">Parceiros não encontrados:</h2>
+            <p className="text-gray-700">Vá até a sessão parceiros e adicione-o com seu respectivo código!</p>
+            <ul className="list-disc pl-5">
+              {notFound.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   )

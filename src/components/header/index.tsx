@@ -1,14 +1,34 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+    const pathname = usePathname();
+
+    const isActive = (href: string) => pathname === href;
+
+    const linkClass = (href: string) =>
+        `font-bold px-3 py-1 rounded transition ${
+            isActive(href)
+                ? "bg-livelo-pink text-white"
+                : "text-livelo-pink hover:text-pink-700"
+        }`;
+
     return (
-        <header className="flex items-center justify-between p-8 px-12 border-b-1 border-livelo-pink" >
+        <header className="flex items-center justify-between p-8 px-12 border-b border-livelo-pink">
             <Image alt="Logo Livelo" src="/logo-livelo.svg" width={100} height={100} />
             <nav>
-                <ul className="flex gap-6 list-none m-0 p-0">
+                <ul className="flex gap-6 m-0 p-0 list-none">
                     <li>
-                        <Link href="/" className="text-livelo-pink hover:text-livelo-pink/60 font-bold font">Home</Link>
+                        <Link href="/" className={linkClass("/")}>Home</Link>
+                    </li>
+                    <li>
+                        <Link href="/partners" className={linkClass("/partners")}>Parceiros</Link>
+                    </li>
+                    <li>
+                        <Link href="/tutorial" className={linkClass("/tutorial")}>Tutorial</Link>
                     </li>
                 </ul>
             </nav>
