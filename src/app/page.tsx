@@ -3,6 +3,7 @@
 import {  useState } from "react"
 import { usePartners } from "@/contexts/Partners";
 import Fuse from 'fuse.js';
+import Link from "next/link";
 
 export default function Home() {
   const [inputPartners, setInputPartners] = useState<string>('');
@@ -61,7 +62,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen p-24">
-      <h1 className="text-xl py-2 text-livelo-pink">Extrator de código de parceiro</h1>
+      <h1 className="text-xl py-2 text-livelo-pink">Extrator de códigos de parceiros</h1>
       <div className="flex flex-col gap-4 border-2 border-livelo-pink rounded-lg p-4 min-h-100 min-w-200">
         <textarea
           name="Parceiros"
@@ -94,7 +95,7 @@ export default function Home() {
         {notFound.length > 0 && (
           <div className="bg-red-100 text-red-700 p-4 rounded mt-4">
             <h2 className="font-bold text-black">Parceiros não encontrados:</h2>
-            <p className="text-gray-700">Vá até a sessão parceiros e adicione-o com seu respectivo código!</p>
+            <p className="text-gray-700">Vá até a seção <Link className="text-livelo-pink cursor-pointer underline" href="/add-partners">Parceiros</Link> e adicione-o(s) com o respectivo código, se necessário!</p>
             <ul className="list-disc pl-5">
               {notFound.map((item, index) => (
                 <li key={index}>{item}</li>
