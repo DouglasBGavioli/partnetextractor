@@ -18,10 +18,13 @@ export default function Header() {
 
     return (
         <header className="flex items-center justify-between p-8 px-12 border-b border-livelo-pink">
+            <div className="flex flex-col items-center gap-1">
             <Image alt="Logo Livelo" src="/logo-livelo.svg" width={100} height={100} />
+            <p className="text-2sm font-semibold text-livelo-pink">Partner Code</p>
+            </div>
             <nav>
                 <ul className="flex gap-6 m-0 p-0 list-none">
-                    <li>
+                    <li>    
                         <Link href="/" className={linkClass("/")}>Home</Link>
                     </li>
                     <li>
