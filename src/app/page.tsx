@@ -1,13 +1,15 @@
 'use client'
 
-import { useState } from "react"
-import { partners } from "@/data/partners";
+import {  useState } from "react"
+import { usePartners } from "@/contexts/Partners";
+import Fuse from 'fuse.js';
 
 export default function Home() {
   const [inputPartners, setInputPartners] = useState<string>('');
   const [partnersCodes, setPartnerdsCodes] = useState<string[]>([]);
   const [notFound, setNotFound] = useState<string[]>([]);
 
+  const { partners } = usePartners();
 
   const handleParceirosInput = (input: string) => {
     const listaLimpa = input
@@ -28,25 +30,30 @@ export default function Home() {
 
   const extractPartnersCods = () => {
     const normalizedInput = handleParceirosInput(inputPartners);
-    console.log("input normalizado", normalizedInput);
-    
-    const codigos = normalizedInput.map((item) => {
-      const partner = partners.find(partner => partner.name.toLowerCase() === item);
-      if (partner) {
-        return partner.code;
+    setNotFound([]);
+  
+    const fuse = new Fuse(partners, {
+      keys: ['name'],
+      threshold: 0.3, // ajusta a sensibilidade (0 = exato, 1 = totalmente permissivo)
+      includeScore: true,
+    });
+  
+    const codigos: string[] = [];
+    const naoEncontrados: string[] = [];
+  
+    normalizedInput.forEach((item) => {
+      const result = fuse.search(item);
+  
+      if (result.length > 0 && result[0].score! < 0.4) {
+        codigos.push(result[0].item.code);
       } else {
-        setNotFound(prev => [...prev, item]);
-        return null;
+        naoEncontrados.push(item);
       }
-    }).filter(Boolean);
-
-    if (codigos.length > 0) {
-      setPartnerdsCodes(codigos as string[]);
-    } else {
-      setPartnerdsCodes([]);
-    }
-  } 
-  console.log("nao encontrados", notFound);
+    });
+  
+    setPartnerdsCodes(codigos);
+    setNotFound(naoEncontrados);
+  };
   
   function copiarParaClipboard() {
     navigator.clipboard.writeText(partnersCodes.join(','));
@@ -73,7 +80,7 @@ export default function Home() {
         </button>
 
         <div className="bg-gray-100 p-3 rounded max-h-60 overflow-y-auto font-mono text-sm whitespace-pre-wrap">
-          {partnersCodes.length > 0 ? partnersCodes.join(",") : <p className="text-red-600">Nenhum código encontrado</p>}
+          {partnersCodes.length > 0 ? partnersCodes.join(",") : "Nenhum código gerado."}
         </div>
 
         <button

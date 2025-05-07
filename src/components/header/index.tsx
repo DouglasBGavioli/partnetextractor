@@ -25,7 +25,7 @@ export default function Header() {
                         <Link href="/" className={linkClass("/")}>Home</Link>
                     </li>
                     <li>
-                        <Link href="/partners" className={linkClass("/partners")}>Parceiros</Link>
+                        <Link href="/add-partners" className={linkClass("/add-partners")}>Parceiros</Link>
                     </li>
                     <li>
                         <Link href="/tutorial" className={linkClass("/tutorial")}>Tutorial</Link>

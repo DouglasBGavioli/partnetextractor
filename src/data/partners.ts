@@ -194,6 +194,7 @@ export const partners: Partner[] = [
   { code: "OXF", name: "oxford" },
   { code: "PDO", name: "pado" },
   { code: "DMD", name: "panvel" },
+  { code: "DMD", name: "panvel-farmacias" },
   { code: "ABV", name: "perfectdraft-ambev" },
   { code: "PTP", name: "pet-paluche" },
   { code: "PLV", name: "petlove" },
