@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react"
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -19,15 +20,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <PartnersProvider>
-      <body
-        className={`antialiased`}
-      >
-        <Header />
-        {children}
-        <Footer/>
+      <body className="antialiased">
+        <Analytics />
+        <PartnersProvider>
+          <Header />
+          {children}
+          <Footer />
+        </PartnersProvider>
       </body>
-      </PartnersProvider>
     </html>
   );
 }
+
