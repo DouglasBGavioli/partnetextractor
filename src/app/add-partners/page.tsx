@@ -32,12 +32,14 @@ export default function AddPartners() {
             <h1 className="text-xl py-2 text-livelo-pink">Adicionar Parceiro</h1>
 
             <div className="flex flex-col gap-4 border-2 border-livelo-pink rounded-lg p-4 min-w-200 max-w-md">
+                <p className="text-sm text-livelo-pink">Informe os dados nos dois campos obrigatórios.</p>
                 <input
                     type="text"
                     placeholder="Código do parceiro"
                     className="w-full p-2 border border-gray-300 rounded"
                     value={partnerCode}
                     maxLength={3}
+                    minLength={3}
                     onChange={(e) => setPartnerCode(e.target.value.toUpperCase())}
                 />
 
@@ -50,8 +52,13 @@ export default function AddPartners() {
                 />
 
                 <button
-                    className="bg-livelo-pink text-white px-4 py-2 rounded hover:bg-pink-700 transition cursor-pointer"
+                    className={`px-4 py-2 rounded transition cursor-pointer 
+    ${partnerCode.trim() && partnerName.trim()
+                            ? 'bg-livelo-pink text-white hover:bg-pink-700'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
                     onClick={handleAddPartner}
+                    disabled={!partnerCode.trim() || !partnerName.trim()}
                 >
                     Adicionar Parceiro
                 </button>

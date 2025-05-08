@@ -5,7 +5,7 @@ export default function Footer() {
             <p className="text-sm">
                 Desenvolvido por{" "}
                 <a
-                    href="https://github.com/douglasgavioli"
+                    href="https://www.linkedin.com/in/douglasbgavioli/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline hover:text-pink-200 font-semibold"

@@ -1,9 +1,10 @@
 'use client'
 
-import {  useState } from "react"
+import { useState } from "react"
 import { usePartners } from "@/contexts/Partners";
 import Fuse from 'fuse.js';
 import Link from "next/link";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function Home() {
   const [inputPartners, setInputPartners] = useState<string>('');
@@ -14,17 +15,17 @@ export default function Home() {
 
   const handleParceirosInput = (input: string) => {
     const listaLimpa = input
-      .split('\n') // separa por linhas
+      .split('\n')
       .map(item =>
         item
-          .trim() // remove espaços extras
-          .normalize('NFD') // normaliza caracteres acentuados
-          .replace(/[\u0300-\u036f]/g, '') // remove acentos
-          .replace(/[^a-zA-Z0-9\s]/g, '') // remove caracteres especiais
-          .replace(/\s+/g, '-') // substitui espaços por hífens
-          .toLowerCase() // deixa tudo em minúsculo
+          .trim()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-zA-Z0-9\s]/g, '')
+          .replace(/\s+/g, '-')
+          .toLowerCase()
       )
-      .filter(item => item.length > 0) // remove linhas vazias
+      .filter(item => item.length > 0)
 
     return listaLimpa;
   }
@@ -32,36 +33,44 @@ export default function Home() {
   const extractPartnersCods = () => {
     const normalizedInput = handleParceirosInput(inputPartners);
     setNotFound([]);
-  
+
     const fuse = new Fuse(partners, {
       keys: ['name'],
-      threshold: 0.3, // ajusta a sensibilidade (0 = exato, 1 = totalmente permissivo)
+      threshold: 0.3,
       includeScore: true,
     });
-  
+
     const codigos: string[] = [];
     const naoEncontrados: string[] = [];
-  
+
     normalizedInput.forEach((item) => {
       const result = fuse.search(item);
-  
+
       if (result.length > 0 && result[0].score! < 0.4) {
         codigos.push(result[0].item.code);
       } else {
         naoEncontrados.push(item);
       }
     });
-  
+
     setPartnerdsCodes(codigos);
     setNotFound(naoEncontrados);
   };
-  
+
   function copiarParaClipboard() {
-    navigator.clipboard.writeText(partnersCodes.join(','));
+    if (partnersCodes.length === 0) {
+      toast.error("Nenhum código para copiar!");
+      return;
+    }
+
+    navigator.clipboard.writeText(partnersCodes.join(','))
+      .then(() => toast.success("Códigos copiados com sucesso!"))
+      .catch(() => toast.error("Erro ao copiar códigos."));
   }
 
   return (
     <div className="flex flex-col min-h-screen p-24">
+      <Toaster position="top-center" reverseOrder={false} />
       <h1 className="text-xl py-2 text-livelo-pink">Extrator de códigos de parceiros</h1>
       <div className="flex flex-col gap-4 border-2 border-livelo-pink rounded-lg p-4 min-h-100 min-w-200">
         <textarea
