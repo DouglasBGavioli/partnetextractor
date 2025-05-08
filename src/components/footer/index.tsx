@@ -1,7 +1,9 @@
 export default function Footer() {
     return (
-        <footer className="flex flex-col items-center justify-center gap-2 p-6 bg-livelo-pink text-white text-center">
-            <p className="text-sm font-semibold">© 2025 Extrator de Código de Parceiro</p>
+        <footer className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4 p-6 bg-livelo-pink text-white text-center md:text-left">
+            <p className="text-sm font-semibold">
+                © 2025 Extrator de Código de Parceiro
+            </p>
             <p className="text-sm">
                 Desenvolvido por{" "}
                 <a
